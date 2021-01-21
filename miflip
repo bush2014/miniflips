@@ -1,0 +1,28 @@
+class Solution:
+    def minFlips(self, mat: List[List[int]]) -> int:
+        def flatten(A):
+            res = []
+            for x in A:
+                res += x
+            return tuple(res)
+        
+        m = len(mat)
+        n = len(mat[0])
+        curr = flatten(mat)
+        visited = set([curr])
+        dq = collections.deque([ (mat, 0) ])
+        while dq:
+            matrix, step = dq.popleft()
+            if sum(flatten(matrix)) == 0:
+                return step
+            for i in range(m):
+                for j in range(n):
+                    curr = deepcopy(matrix)
+                    for x,y in [(i-1,j), (i+1,j), (i,j), (i, j+1), (i, j-1)]:
+                        if 0<=x<m and 0<=y<n:
+                            curr[x][y]= 1 - curr[x][y]
+                    flat = flatten(curr)
+                    if flat not in visited:
+                        dq.append((curr, step+1))
+                        visited.add(flat)
+        return -1
